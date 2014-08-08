@@ -11,7 +11,7 @@ class PracticeJob(args: Args) extends Job(args) {
   val user = args("user")
   val password = args("password")
   val output = args("output")
-  val splits = Integer.valueOf(args.getOrElse("splits", "3"))
+  val splits = Integer.valueOf(args.getOrElse("splits", "1"))
 
   case class PracticeSource() extends TeradataSource(connectionUrl, user, password) {
     override def tempTableName = "practice1__temporary"
