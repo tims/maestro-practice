@@ -24,6 +24,7 @@ class PracticeJob(args: Args) extends Job(args) {
   PracticeSource().write(Tsv(output))
 }
 
+/*
 object Hi extends HadoopSupport with ScaldingSupport {
   def main(args: Array[String]): Unit = {
     println("Hi!")
@@ -37,3 +38,4 @@ object Hi extends HadoopSupport with ScaldingSupport {
     job.run
   }
 }
+*/
