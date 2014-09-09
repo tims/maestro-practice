@@ -1,15 +1,14 @@
 package practice
 
-import au.com.cba.omnia.jdbc.teradata.PracticeJob;
+import org.junit.runner.RunWith
 import au.com.cba.omnia.thermometer.core.ThermometerSpec
 import au.com.cba.omnia.thermometer.core.Thermometer._
-
-import com.twitter.scalding.Tsv
-
-import au.com.cba.omnia.thermometer.fact.PathFactoid
-
+import au.com.cba.omnia.thermometer.fact.PathFactoids._
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
+import au.com.cba.omnia.thermometer.core.ThermometerRecordReader
+import scalaz.effect.IO
+import au.com.cba.omnia.thermometer.context.Context
 
 @RunWith(classOf[JUnitRunner])
 object PracticeSpec extends ThermometerSpec {
@@ -17,14 +16,17 @@ object PracticeSpec extends ThermometerSpec {
 Export job spec
 ===============
 
-  test export $export
+  test things $things
   
 """
-  
-  val pipeline = withArgs(Map())(new PracticeJob(_))
-  def export = pipeline.withFacts(
-    path("/Users/tim/output.txt") ==> PathFactoid((context, path) => {
-      context.lines(path).map(l => println(l))
-      true
-    }))
+
+  val pipeline = withArgs(Map("input" -> "input", "output" -> "output"))(new PracticeJob(_))
+
+  val reader = ThermometerRecordReader[String]((conf, path) => IO {
+    new Context(conf).lines(path)
+  })
+
+  def things = withEnvironment(path(getClass.getResource("env").getPath()))(
+    pipeline.withFacts(
+      "output" </> "*" ==> records(reader, reader, "expected" </> "*")))
 }
